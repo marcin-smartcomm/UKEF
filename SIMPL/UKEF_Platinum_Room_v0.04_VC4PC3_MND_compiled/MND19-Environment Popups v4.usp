@@ -1,0 +1,157 @@
+#SYMBOL_NAME "MND19-Environment Popups v4"
+#HINT ""   
+#CATEGORY ""
+/****************************************************************************)
+(*|          *-------------------------------------------------*           |*)
+(*|          |            OAKVILLE MANAGEMENT LTD              |           |*)
+(*|          |         Design and Development Centre           |           |*)
+(*|          |_________________________________________________|           |*)
+(*|          |                                                 |           |*)
+(*|          |   Tel: 01276 62064       Mob: 07920 844333      |           |*)
+(*|          *-------------------------------------------------*           |*)
+(*|                                                                        |*)
+(*|          +++   ©2007,     OAKVILLE    MANAGEMENT    LTD  +++           |*)
+(*|          +++    A L L   R I G H T S   R E S E R V E D    +++           |*)
+(*|************************************************************************|*)
+(*| This source code is provided subject to the condition that it shall not|*)
+(*| by way of trade or otherwise, be lent, resold, hired out, or otherwise |*)
+(*| circulated.  Nor shall it be copied,  altered,  modified,  or  amended |*)
+(*| without  the  programmer's  prior  consent  and  permission.           |*)
+(*|************************************************************************|*)
+(*|------------------------------------------------------------------------|*)
+(*|    Programming : Matthew Dean                                          |*)
+(*|************************************************************************|*/
+#HELP_BEGIN
+
+Manages timed panel popups.
+
+INPUTS-
+
+CLEAR_POP[x] - Place in here signals which would clear these popups
+ENVIRON_POP[x]- Place in here the signals from the popup buttons on the panel. Ie, the button that needs to pop up the volume bar, or the lights bar.
+ALL_POP_BUTTONS[x] - Place in here all buttons on those popups (these extend the popup time)
+
+OUTPUTS-
+
+SHOW_POP[x] - Attach these signals to the subpage fb on the panel
+
+PARAMS-
+
+Pop_Time - The time in seconds to show the popup.
+
+
+Cancel timeout cancels the timeout for the page disappearing so it will stay up until forced off.
+
+   
+#HELP_END
+/****************************************************************************
+  COMPILER DIRECTIVES GO BELOW
+*****************************************************************************/
+#DEFAULT_VOLATILE           
+#ENABLE_STACK_CHECKING
+
+/****************************************************************************
+  CONSTANT DEFINITIONS GO BELOW
+*****************************************************************************/   
+// #DEFINE_CONSTANT NAME 1
+
+/****************************************************************************
+  INPUT & OUTPUT DEFINITIONS GO BELOW
+  EG: DIGITAL_INPUT // ANALOG_INPUT // STRING_INPUT // BUFFER_INPUT // 
+      DIGITAL_OUTPUT // ANALOG_OUTPUT // STRING_OUTPUT
+*****************************************************************************/   
+DIGITAL_INPUT _skip_,CLEAR_POPS[20],ENVIRON_POP[15],ALL_POP_BUTTONS[198],CANCEL_TIMEOUT[2];
+
+DIGITAL_OUTPUT _skip_,SHOW_POP[15];
+
+INTEGER_PARAMETER POPTIME;
+
+
+/****************************************************************************
+  VARIABLE DEFINITIONS GO BELOW  
+  EG: INTEGER // STRING 
+*****************************************************************************/   
+INTEGER POP_NOW;         
+INTEGER X;
+/****************************************************************************
+  SUBROUTINE & FUNCTION DEFINITIONS GO BELOW
+*****************************************************************************/   
+
+
+
+/*******************************************************************************************
+  THE EVENTS GO BELOW 
+  EG: PUSH, RELEASE,CHANGE 
+*******************************************************************************************/
+PUSH CLEAR_POPS
+{
+FOR(X=1 TO 15)
+	{
+	IF(ISSIGNALDEFINED(SHOW_POP[X])) SHOW_POP[X]=0;
+	}
+POP_NOW=0;
+}
+
+RELEASE ALL_POP_BUTTONS
+RELEASE ENVIRON_POP
+{
+WAIT(POPTIME,POPWAIT)
+	{
+	FOR(X=1 TO 15)
+		{
+		SHOW_POP[X]=0;
+		}
+	POP_NOW=0;	
+	}
+}
+PUSH CANCEL_TIMEOUT
+{
+CANCELWAIT(POPWAIT);
+WAIT(100); CANCELWAIT(POPWAIT);
+}
+
+PUSH ALL_POP_BUTTONS
+{
+CANCELWAIT(POPWAIT);
+} 
+
+PUSH ENVIRON_POP
+{
+CANCELWAIT(POPWAIT);
+FOR(X=1 TO 15)
+	{
+	IF(ISSIGNALDEFINED(SHOW_POP[X])) SHOW_POP[X]=0;
+	}
+IF(POP_NOW<>GETLASTMODIFIEDARRAYINDEX())
+	{
+	FOR(X=1 TO 15)
+		{
+		IF(ISSIGNALDEFINED(SHOW_POP[X])) SHOW_POP[X]=0;
+		IF(X=15)
+			{
+			SHOW_POP[GETLASTMODIFIEDARRAYINDEX()]=1;
+			POP_NOW=GETLASTMODIFIEDARRAYINDEX();
+			}
+		}
+	}
+else IF(POP_NOW=GETLASTMODIFIEDARRAYINDEX())
+	{
+	POP_NOW=0;
+	}
+}
+
+
+
+
+/*******************************************************************************************
+  STARTUP CODE GOES BELOW                                 
+********************************************************************************************/
+FUNCTION MAIN()
+{
+// STARTUP CODE
+}
+
+
+
+
+

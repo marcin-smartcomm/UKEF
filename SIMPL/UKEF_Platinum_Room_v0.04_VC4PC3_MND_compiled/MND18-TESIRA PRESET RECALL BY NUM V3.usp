@@ -1,0 +1,100 @@
+#SYMBOL_NAME "MND18-TESIRA PRESET RECALL BY NUM V3"
+#HINT ""   
+#CATEGORY ""
+/****************************************************************************)
+(*|          *-------------------------------------------------*           |*)
+(*|          |            OAKVILLE MANAGEMENT LTD              |           |*)
+(*|          |         Design and Development Centre           |           |*)
+(*|          |_________________________________________________|           |*)
+(*|          |                                                 |           |*)
+(*|          |   Tel: 01276 62064       Mob: 07920 844333      |           |*)
+(*|          *-------------------------------------------------*           |*)
+(*|                                                                        |*)
+(*|          +++   ©2007,     OAKVILLE    MANAGEMENT    LTD  +++           |*)
+(*|          +++    A L L   R I G H T S   R E S E R V E D    +++           |*)
+(*|************************************************************************|*)
+(*| This source code is provided subject to the condition that it shall not|*)
+(*| by way of trade or otherwise, be lent, resold, hired out, or otherwise |*)
+(*| circulated.  Nor shall it be copied,  altered,  modified,  or  amended |*)
+(*| without  the  programmer's  prior  consent  and  permission.           |*)
+(*|************************************************************************|*)
+(*|------------------------------------------------------------------------|*)
+(*|    Programming : Matthew Dean                                          |*)
+(*|************************************************************************|*/
+#HELP_BEGIN     
+
+
+#HELP_END
+/****************************************************************************
+  COMPILER DIRECTIVES GO BELOW
+*****************************************************************************/
+#DEFAULT_VOLATILE           
+#ENABLE_STACK_CHECKING
+
+/****************************************************************************
+  CONSTANT DEFINITIONS GO BELOW
+*****************************************************************************/   
+
+/****************************************************************************
+  INPUT & OUTPUT DEFINITIONS GO BELOW
+  EG: DIGITAL_INPUT // ANALOG_INPUT // STRING_INPUT // BUFFER_INPUT // 
+      DIGITAL_OUTPUT // ANALOG_OUTPUT // STRING_OUTPUT
+*****************************************************************************/   
+DIGITAL_INPUT
+
+call_again,PRESET_GO[30];
+
+STRING_PARAMETER 
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+PRESET_NAME$[30][50];
+
+STRING_OUTPUT TX$;
+
+
+
+/****************************************************************************
+  VARIABLE DEFINITIONS GO BELOW  
+  EG: INTEGER // STRING 
+*****************************************************************************/   
+INTEGER LAST;
+/****************************************************************************
+  SUBROUTINE & FUNCTION DEFINITIONS GO BELOW
+*****************************************************************************/   
+
+
+/*******************************************************************************************
+  THE EVENTS GO BELOW 
+  EG: PUSH, RELEASE,CHANGE 
+*******************************************************************************************/
+PUSH PRESET_GO
+{
+LAST=GETLASTMODIFIEDARRAYINDEX();
+TX$="DEVICE recallPreset "+PRESET_NAME$[GETLASTMODIFIEDARRAYINDEX()]+"\x0A";
+}
+
+PUSH call_again
+{
+IF(LAST) TX$="DEVICE recallPresetByName \x22"+PRESET_NAME$[LAST]+"\x22\x0A";
+}
+     
+/*******************************************************************************************
+  STARTUP CODE GOES BELOW                                 
+********************************************************************************************/
+FUNCTION MAIN()
+{        
+}

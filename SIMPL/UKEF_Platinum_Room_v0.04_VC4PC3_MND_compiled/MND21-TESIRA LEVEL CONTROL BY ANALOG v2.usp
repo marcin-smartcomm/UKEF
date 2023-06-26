@@ -1,0 +1,190 @@
+#SYMBOL_NAME "MND21-TESIRA LEVEL CONTROL BY ANALOG v2"
+#HINT ""   
+#CATEGORY ""
+/****************************************************************************)
+(*|          *-------------------------------------------------*           |*)
+(*|          |            OAKVILLE MANAGEMENT LTD              |           |*)
+(*|          |         Design and Development Centre           |           |*)
+(*|          |_________________________________________________|           |*)
+(*|          |                                                 |           |*)
+(*|          |   Tel: 01276 62064       Mob: 07920 844333      |           |*)
+(*|          *-------------------------------------------------*           |*)
+(*|                                                                        |*)
+(*|          +++   ©2007,     OAKVILLE    MANAGEMENT    LTD  +++           |*)
+(*|          +++    A L L   R I G H T S   R E S E R V E D    +++           |*)
+(*|************************************************************************|*)
+(*| This source code is provided subject to the condition that it shall not|*)
+(*| by way of trade or otherwise, be lent, resold, hired out, or otherwise |*)
+(*| circulated.  Nor shall it be copied,  altered,  modified,  or  amended |*)
+(*| without  the  programmer's  prior  consent  and  permission.           |*)
+(*|************************************************************************|*)
+(*|------------------------------------------------------------------------|*)
+(*|    Programming : Matthew Dean                                          |*)
+(*|************************************************************************|*/
+#HELP_BEGIN     
+                                                                   
+A basic level controller for tesira with a low overhead.
+
+Scale your analog and the ss level will match it
+
+Use the mute to mute it (hold it high)
+
+#HELP_END
+/****************************************************************************
+  COMPILER DIRECTIVES GO BELOW
+*****************************************************************************/
+#DEFAULT_VOLATILE           
+#ENABLE_STACK_CHECKING
+
+/****************************************************************************
+  CONSTANT DEFINITIONS GO BELOW
+*****************************************************************************/   
+
+/****************************************************************************
+  INPUT & OUTPUT DEFINITIONS GO BELOW
+  EG: DIGITAL_INPUT // ANALOG_INPUT // STRING_INPUT // BUFFER_INPUT // 
+      DIGITAL_OUTPUT // ANALOG_OUTPUT // STRING_OUTPUT
+*****************************************************************************/   
+DIGITAL_INPUT
+
+ACTIVE,
+REFRESH,
+MUTE;
+
+ANALOG_INPUT LEVEL_IN;
+             
+STRING_INPUT
+TESIRA_LEVEL_NAME_OVERRIDE$[50],
+TESIRA_LEVEL_NUM_OVERRIDE$[50],
+TESIRA_MUTE_NAME_OVERRIDE$[50],
+TESIRA_MUTE_NUM_OVERRIDE$[50];
+       
+STRING_PARAMETER 
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+_SKIP_,_SKIP_,
+TESIRA_LEVEL_NAME_SET$[50],
+TESIRA_LEVEL_NUM_SET$[50],
+TESIRA_MUTE_NAME_SET$[50],
+TESIRA_MUTE_NUM_SET$[50];
+
+STRING_OUTPUT TX$;
+
+
+/****************************************************************************
+  VARIABLE DEFINITIONS GO BELOW  
+  EG: INTEGER // STRING 
+*****************************************************************************/   
+NONVOLATILE SIGNED_INTEGER VOL_LEVEL;
+STRING ASCII_VOL_LEVEL[5];
+
+STRING TESIRA_LEVEL_NAME$[50];
+STRING TESIRA_LEVEL_NUM$[50];
+STRING TESIRA_MUTE_NAME$[50];
+STRING TESIRA_MUTE_NUM$[50];
+
+/****************************************************************************
+  SUBROUTINE & FUNCTION DEFINITIONS GO BELOW
+*****************************************************************************/   
+FUNCTION SET_VOL()
+{       
+   IF(VOL_LEVEL<0)		    
+   	{
+	ASCII_VOL_LEVEL="-"+ITOA(65535-(VOL_LEVEL-1));
+   	}
+   ELSE IF(VOL_LEVEL>=0)		    
+   	{
+	ASCII_VOL_LEVEL=ITOA(VOL_LEVEL);       
+   	}
+TX$=""+CHR(34)+TESIRA_LEVEL_NAME$+CHR(34)+" set level "+TESIRA_LEVEL_NUM$+" "+ASCII_VOL_LEVEL+"\x0A";			
+}
+
+
+
+/*******************************************************************************************
+  THE EVENTS GO BELOW 
+  EG: PUSH, RELEASE,CHANGE 
+*******************************************************************************************/
+CHANGE TESIRA_LEVEL_NAME_OVERRIDE$
+{
+TESIRA_LEVEL_NAME$=TESIRA_LEVEL_NAME_OVERRIDE$;
+}
+CHANGE TESIRA_LEVEL_NUM_OVERRIDE$
+{
+TESIRA_LEVEL_NUM$=TESIRA_LEVEL_NUM_OVERRIDE$;
+}
+CHANGE TESIRA_MUTE_NAME_OVERRIDE$
+{
+TESIRA_MUTE_NAME$=TESIRA_MUTE_NAME_OVERRIDE$;
+}
+CHANGE TESIRA_MUTE_NUM_OVERRIDE$
+{
+TESIRA_MUTE_NUM$=TESIRA_MUTE_NUM_OVERRIDE$;
+}
+
+
+push active
+{
+DELAY(200);
+SET_VOL();
+IF( MUTE)
+	{
+	TX$=""+CHR(34)+TESIRA_MUTE_NAME$+CHR(34)+" set mute "+TESIRA_MUTE_NUM$+" true\x0A";		
+	}
+ELSE IF(!MUTE)
+	{
+	TX$=""+CHR(34)+TESIRA_MUTE_NAME$+CHR(34)+" set mute "+TESIRA_MUTE_NUM$+" false\x0A";		
+	}
+}         
+push REFRESH
+{
+IF(ACTIVE)
+	{
+	SET_VOL();
+	DELAY(5);
+	IF( MUTE)
+		{
+		TX$=""+CHR(34)+TESIRA_MUTE_NAME$+CHR(34)+" set mute "+TESIRA_MUTE_NUM$+" true\x0A";		
+		}
+	ELSE IF(!MUTE)
+		{
+		TX$=""+CHR(34)+TESIRA_MUTE_NAME$+CHR(34)+" set mute "+TESIRA_MUTE_NUM$+" false\x0A";		
+		}
+	} 
+}        
+         
+
+     
+CHANGE LEVEL_IN
+{ 
+IF(ACTIVE)
+	{
+	VOL_LEVEL=LEVEL_IN;            
+	SET_VOL();
+	}
+}  
+
+PUSH MUTE
+{
+	IF(ACTIVE) TX$=""+CHR(34)+TESIRA_MUTE_NAME$+CHR(34)+" set mute "+TESIRA_MUTE_NUM$+" true\x0A";		
+}
+RELEASE MUTE
+{
+	IF(ACTIVE) TX$=""+CHR(34)+TESIRA_MUTE_NAME$+CHR(34)+" set mute "+TESIRA_MUTE_NUM$+" false\x0A";		
+}
+ 
+
+     
+/*******************************************************************************************
+  STARTUP CODE GOES BELOW                                 
+********************************************************************************************/
+FUNCTION MAIN()
+{        
+// STARTUP CODE}
+TESIRA_LEVEL_NAME$=TESIRA_LEVEL_NAME_SET$;
+TESIRA_LEVEL_NUM$=TESIRA_LEVEl_NUM_SET$;
+TESIRA_MUTE_NAME$=TESIRA_MUTE_NAME_SET$;
+TESIRA_MUTE_NUM$=TESIRA_MUTE_NUM_SET$;
+
+}

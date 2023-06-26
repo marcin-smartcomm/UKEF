@@ -1,0 +1,149 @@
+[BEGIN]
+  Version=1
+[END]
+[BEGIN]
+  ObjTp=FSgntr
+  Sgntr=UserSPlus
+  RelVrs=1
+  IntStrVrs=1
+  SPlusVrs=4.06.00
+  CrossCplrVrs=1.3
+[END]
+[BEGIN]
+  ObjTp=Hd
+  Cmn1=||5\\||i
+  Cmn2=||:\\A basic level controller for tesira with a low overhead.
+  Cmn3=\\\\Scale your analog and the ss level will match it\\\\Use the||1
+  Cmn4=mute to mute it (hold it high)\\
+[END]
+[BEGIN]
+  ObjTp=Symbol
+  Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,718,756,854,
+  Exclusions_CDS=
+  Inclusions_CDS=5,6,7
+  Name=MND21-TESIRA LEVEL CONTROL BY ANALOG v2
+  SmplCName=MND21-TESIRA LEVEL CONTROL BY ANALOG v2.usp
+  Code=1
+  SysRev5=4.000
+  SMWRev=2.02.05
+  InputCue1=ACTIVE
+  InputSigType1=Digital
+  InputCue2=REFRESH
+  InputSigType2=Digital
+  InputCue3=MUTE
+  InputSigType3=Digital
+  InputList2Cue1=LEVEL_IN
+  InputList2SigType1=Analog
+  InputList2Cue2=TESIRA_LEVEL_NAME_OVERRIDE$
+  InputList2SigType2=Serial
+  InputList2Cue3=TESIRA_LEVEL_NUM_OVERRIDE$
+  InputList2SigType3=Serial
+  InputList2Cue4=TESIRA_MUTE_NAME_OVERRIDE$
+  InputList2SigType4=Serial
+  InputList2Cue5=TESIRA_MUTE_NUM_OVERRIDE$
+  InputList2SigType5=Serial
+  OutputList2Cue1=TX$
+  OutputList2SigType1=Serial
+  ParamCue1=[Reference Name]
+  ParamCue2=[~UNUSED~]
+  ParamSigType2=Constant
+  ParamCue3=[~UNUSED~]
+  ParamSigType3=Constant
+  ParamCue4=[~UNUSED~]
+  ParamSigType4=Constant
+  ParamCue5=[~UNUSED~]
+  ParamSigType5=Constant
+  ParamCue6=[~UNUSED~]
+  ParamSigType6=Constant
+  ParamCue7=[~UNUSED~]
+  ParamSigType7=Constant
+  ParamCue8=[~UNUSED~]
+  ParamSigType8=Constant
+  ParamCue9=[~UNUSED~]
+  ParamSigType9=Constant
+  ParamCue10=TESIRA_LEVEL_NAME_SET$
+  ParamSigType10=String
+  ParamCue11=TESIRA_LEVEL_NUM_SET$
+  ParamSigType11=String
+  ParamCue12=TESIRA_MUTE_NAME_SET$
+  ParamSigType12=String
+  ParamCue13=TESIRA_MUTE_NUM_SET$
+  ParamSigType13=String
+  MinVariableInputs=3
+  MaxVariableInputs=3
+  MinVariableInputsList2=5
+  MaxVariableInputsList2=5
+  MinVariableOutputs=0
+  MaxVariableOutputs=0
+  MinVariableOutputsList2=1
+  MaxVariableOutputsList2=1
+  MinVariableParams=12
+  MaxVariableParams=12
+  Expand=expand_separately
+  Expand2=expand_separately
+  ProgramTree=Logic
+  SymbolTree=32
+  Hint=
+  PdfHelp=
+  HelpID= 
+  Render=4
+  Smpl-C=16
+  CompilerCode=-48
+  CompilerParamCode=27
+  CompilerParamCode5=14
+  NumFixedParams=1
+  Pp1=1
+  Pp10=10
+  Pp11=11
+  Pp12=12
+  Pp13=13
+  MPp=13
+  NVStorage=10
+  ParamSigType1=String
+  SmplCInputCue1=o#
+  SmplCOutputCue1=i#
+  SmplCInputList2Cue1=an#
+  SmplCOutputList2Cue1=ai#
+  SPlus2CompiledName=S2_MND21_TESIRA_LEVEL_CONTROL_BY_ANALOG_v2
+  SymJam=NonExclusive
+  FileName=MND21-TESIRA LEVEL CONTROL BY ANALOG v2.ush
+  SIMPLPlusModuleEncoding=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=1
+  Tp=1
+  NoS=False
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=10
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=11
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=12
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=13
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
