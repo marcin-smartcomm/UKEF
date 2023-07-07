@@ -10,6 +10,7 @@ using System.IO;
 using Crestron.SimplSharpPro.DM;
 using Crestron.SimplSharpPro.EthernetCommunication;
 using Crestron.SimplSharp.CrestronSockets;
+using Newtonsoft.Json;
 
 namespace HTTPRequestSender
 {
@@ -54,7 +55,7 @@ namespace HTTPRequestSender
             {
                 ConsoleLogger.Start(55556);
 
-                _eISCServer = new VirtualControlEISCClient(0x20, "1", this);
+                _eISCServer = new VirtualControlEISCClient(0x20, "UKEF", this);
                 if (_eISCServer.Register() != eDeviceRegistrationUnRegistrationResponse.Success)
                 {
                     ConsoleLogger.WriteLine("Failed To Register EISCC Server");
@@ -93,23 +94,22 @@ namespace HTTPRequestSender
 
         public void ChangeUSBStateRequest(string newState)
         {
-            SendLogin();
-            SendCommand(newState);
+            SendLogin(newState);
+            //SendCommand(newState);
         }
 
-        void SendLogin()
+        void SendLogin(string newState)
         {
             Task.Run(() =>
             {
                 try
                 {
                     ConsoleLogger.WriteLine("Trying to send a command to Poly");
-                    var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://10.0.5.12/rest/session");
+                    var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://10.5.0.12/rest/session");
                     httpWebRequest.ContentType = "application/json";
                     httpWebRequest.Method = "POST";
                     httpWebRequest.Accept = "*/*";
                     httpWebRequest.CookieContainer = new CookieContainer();
-                    httpWebRequest.CookieContainer.Add(new Cookie("cookies.txt", ""));
                     httpWebRequest.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
                     using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
@@ -119,6 +119,7 @@ namespace HTTPRequestSender
                         streamWriter.Write(json);
                     }
                     var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                    httpWebRequest.CookieContainer.Add(httpResponse.Cookies);
                     using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                     {
                         var result = streamReader.ReadToEnd();
@@ -127,6 +128,7 @@ namespace HTTPRequestSender
                         ConsoleLogger.WriteLine("Received Response from Poly: " + result.ToString());
                     }
                     ConsoleLogger.WriteLine("Command sent");
+                    SendCommand(newState, httpResponse.Cookies);
                 }
                 catch (Exception ex)
                 {
@@ -135,19 +137,19 @@ namespace HTTPRequestSender
             });
         }
 
-        void SendCommand(string command)
+        void SendCommand(string command, CookieCollection cookies)
         {
             Task.Run(() =>
             {
                 try
                 {
                     ConsoleLogger.WriteLine("Trying to send a command to Poly");
-                    var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://10.0.5.12/rest/config");
+                    var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://10.5.0.12/rest/config");
                     httpWebRequest.ContentType = "application/json";
                     httpWebRequest.Method = "POST";
                     httpWebRequest.Accept = "*/*";
                     httpWebRequest.CookieContainer = new CookieContainer();
-                    httpWebRequest.CookieContainer.Add(new Cookie("cookies.txt", ""));
+                    httpWebRequest.CookieContainer.Add(cookies);
                     httpWebRequest.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
                     using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
@@ -160,6 +162,19 @@ namespace HTTPRequestSender
                     using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                     {
                         var result = streamReader.ReadToEnd();
+                        //PolyResponse polyResponse = new PolyResponse();
+                        //polyResponse = JsonConvert.DeserializeObject<PolyResponse>(result);
+                        if (result.Contains("False") && result.Contains("NOERROR"))
+                        {
+                            _eISCServer.BooleanInput[1].BoolValue = true;
+                            _eISCServer.BooleanInput[2].BoolValue = false;
+                        }
+                        if (result.Contains("True") && result.Contains("NOERROR"))
+                        {
+                            _eISCServer.BooleanInput[1].BoolValue = false;
+                            _eISCServer.BooleanInput[2].BoolValue = true;
+                        }
+
                         result = result.Replace('{', '(');
                         result = result.Replace('}', ')');
                         ConsoleLogger.WriteLine("Received Response from Poly: " + result.ToString());
@@ -168,7 +183,7 @@ namespace HTTPRequestSender
                 }
                 catch (Exception ex)
                 {
-                    ConsoleLogger.WriteLine("Problem Sending Login: " + ex.Message);
+                    ConsoleLogger.WriteLine("Problem Sending Command: " + ex.Message);
                 }
             });
         }

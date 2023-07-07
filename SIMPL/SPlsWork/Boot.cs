@@ -31,7 +31,7 @@ namespace UserModule_BOOT
                 __context__.SourceCodeLine = 26;
                 DIGITAL_1  .Value = (ushort) ( 1 ) ; 
                 __context__.SourceCodeLine = 27;
-                CreateWait ( "__SPLS_TMPVAR__WAITLABEL_3__" , 20 , __SPLS_TMPVAR__WAITLABEL_3___Callback ) ;
+                CreateWait ( "__SPLS_TMPVAR__WAITLABEL_0__" , 20 , __SPLS_TMPVAR__WAITLABEL_0___Callback ) ;
                 __context__.SourceCodeLine = 32;
                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (_SplusNVRAM.LFIRSTBOOT != 1447))  ) ) 
                     { 
@@ -64,7 +64,7 @@ namespace UserModule_BOOT
             return __obj__;
             }
             
-        public void __SPLS_TMPVAR__WAITLABEL_3___CallbackFn( object stateInfo )
+        public void __SPLS_TMPVAR__WAITLABEL_0___CallbackFn( object stateInfo )
         {
         
             try
@@ -96,7 +96,7 @@ namespace UserModule_BOOT
         DIGITAL_1 = new Crestron.Logos.SplusObjects.DigitalOutput( DIGITAL_1__DigitalOutput__, this );
         m_DigitalOutputList.Add( DIGITAL_1__DigitalOutput__, DIGITAL_1 );
         
-        __SPLS_TMPVAR__WAITLABEL_3___Callback = new WaitFunction( __SPLS_TMPVAR__WAITLABEL_3___CallbackFn );
+        __SPLS_TMPVAR__WAITLABEL_0___Callback = new WaitFunction( __SPLS_TMPVAR__WAITLABEL_0___CallbackFn );
         
         
         _SplusNVRAM.PopulateCustomAttributeList( true );
@@ -114,7 +114,7 @@ namespace UserModule_BOOT
     public UserModuleClass_BOOT ( string InstanceName, string ReferenceID, Crestron.Logos.SplusObjects.CrestronStringEncoding nEncodingType ) : base( InstanceName, ReferenceID, nEncodingType ) {}
     
     
-    private WaitFunction __SPLS_TMPVAR__WAITLABEL_3___Callback;
+    private WaitFunction __SPLS_TMPVAR__WAITLABEL_0___Callback;
     
     
     const uint SYSTEM_INIT__DigitalOutput__ = 0;

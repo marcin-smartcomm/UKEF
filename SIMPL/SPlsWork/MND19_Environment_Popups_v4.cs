@@ -124,7 +124,7 @@ object CANCEL_TIMEOUT_OnPush_2 ( Object __EventInfo__ )
         __context__.SourceCodeLine = 109;
         CancelWait ( "POPWAIT" ) ; 
         __context__.SourceCodeLine = 110;
-        CreateWait ( "__SPLS_TMPVAR__WAITLABEL_5__" , 100 , __SPLS_TMPVAR__WAITLABEL_5___Callback ) ;
+        CreateWait ( "__SPLS_TMPVAR__WAITLABEL_2__" , 100 , __SPLS_TMPVAR__WAITLABEL_2___Callback ) ;
         __context__.SourceCodeLine = 110;
         CancelWait ( "POPWAIT" ) ; 
         
@@ -136,7 +136,7 @@ object CANCEL_TIMEOUT_OnPush_2 ( Object __EventInfo__ )
     
 }
 
-public void __SPLS_TMPVAR__WAITLABEL_5___CallbackFn( object stateInfo )
+public void __SPLS_TMPVAR__WAITLABEL_2___CallbackFn( object stateInfo )
 {
 
     try
@@ -310,7 +310,7 @@ public override void LogosSplusInitialize()
     m_ParameterList.Add( POPTIME__Parameter__, POPTIME );
     
     POPWAIT_Callback = new WaitFunction( POPWAIT_CallbackFn );
-    __SPLS_TMPVAR__WAITLABEL_5___Callback = new WaitFunction( __SPLS_TMPVAR__WAITLABEL_5___CallbackFn );
+    __SPLS_TMPVAR__WAITLABEL_2___Callback = new WaitFunction( __SPLS_TMPVAR__WAITLABEL_2___CallbackFn );
     
     for( uint i = 0; i < 20; i++ )
         CLEAR_POPS[i+1].OnDigitalPush.Add( new InputChangeHandlerWrapper( CLEAR_POPS_OnPush_0, false ) );
@@ -347,7 +347,7 @@ public UserModuleClass_MND19_ENVIRONMENT_POPUPS_V4 ( string InstanceName, string
 
 
 private WaitFunction POPWAIT_Callback;
-private WaitFunction __SPLS_TMPVAR__WAITLABEL_5___Callback;
+private WaitFunction __SPLS_TMPVAR__WAITLABEL_2___Callback;
 
 
 const uint CLEAR_POPS__DigitalInput__ = 0;

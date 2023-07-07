@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "c98f397f-72d8-470c-9ff9-f5a7df094762": {
+      "ProjectGuid": "c98f397f-72d8-470c-9ff9-f5a7df094762",
+      "DisplayName": "HTTPRequestSender",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
