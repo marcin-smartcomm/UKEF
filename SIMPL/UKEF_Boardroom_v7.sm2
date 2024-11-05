@@ -1040,8 +1040,8 @@ Xm=-1
 Ym=-1
 SH=126
 Z=100
-Ht=3
-Hi=12
+Ht=1
+Hi=1
 ]
 [
 ObjTp=Et
@@ -4073,7 +4073,7 @@ ObjVer=1
 SmVr=1193
 PrH=24
 CF=2
-Cmn1=USB Input Signal
+Cmn1=Mics Levels
 mC=4
 C1=123
 C2=124
